@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BankTime - Tài chính Sinh viên</title>
+    <title>BankTime - Hỗ trợ tài chính sinh viên Kế toán</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -18,42 +18,93 @@
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
-        body { background-color: var(--bg-color); color: var(--text-main); line-height: 1.6; padding-bottom: 50px; }
-        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-        header { text-align: center; padding: 20px 0; }
-        header h1 { color: var(--primary-color); font-size: 1.8rem; letter-spacing: -1px; }
+        body { background-color: var(--bg-color); color: var(--text-main); line-height: 1.6; overflow-x: hidden; }
 
-        /* Navigation */
+        /* --- MÀN HÌNH BẮT ĐẦU (WELCOME SCREEN) --- */
+        #welcome-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            color: white;
+            text-align: center;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        #welcome-screen.hidden {
+            transform: translateY(-100%);
+        }
+
+        .welcome-logo {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            letter-spacing: -2px;
+        }
+
+        .welcome-sub {
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+
+        .btn-start {
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            background: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            transition: 0.3s;
+        }
+
+        .btn-start:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 25px rgba(0,0,0,0.3);
+        }
+
+        /* --- GIAO DIỆN CHÍNH --- */
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; display: none; }
+        .container.active { display: block; animation: slideUp 0.6s ease; }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        header { text-align: center; padding: 20px 0; }
+        header h1 { color: var(--primary-color); font-size: 1.8rem; }
+
         .tabs-nav { display: flex; background: #e2e8f0; padding: 5px; border-radius: 12px; margin-bottom: 25px; }
         .tab-btn { flex: 1; padding: 10px; border: none; background: none; cursor: pointer; font-weight: 600; color: var(--secondary-color); border-radius: 8px; font-size: 0.85rem; }
-        .tab-btn.active { background: var(--card-bg); color: var(--primary-color); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        .tab-btn.active { background: var(--card-bg); color: var(--primary-color); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
 
-        .tab-content { display: none; animation: fadeIn 0.3s ease; }
+        .tab-content { display: none; }
         .tab-content.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* Card & Forms */
-        .card { background: var(--card-bg); padding: 20px; border-radius: 16px; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05); margin-bottom: 20px; }
+        .card { background: var(--card-bg); padding: 20px; border-radius: 16px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05); margin-bottom: 20px; }
         .form-group { margin-bottom: 18px; }
         label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 5px; color: var(--secondary-color); }
-        input { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 1rem; outline: none; transition: 0.2s; }
+        input { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 1rem; outline: none; }
         input:focus { border-color: var(--primary-color); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
-        input.input-error { border-color: #ef4444; background-color: #fff1f1; }
         
         .amount-word { font-size: 0.8rem; color: var(--word-color); margin-top: 6px; font-style: italic; min-height: 1.2rem; }
 
         button.btn-calc { width: 100%; padding: 14px; background: var(--primary-color); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; margin-top: 10px; transition: 0.2s; }
-        button.btn-calc:hover { background: #1d4ed8; transform: translateY(-1px); }
+        button.btn-calc:hover { background: #1d4ed8; }
 
-        /* Result Display */
         .result-box { margin-top: 20px; padding: 15px; border-radius: 8px; border-left: 4px solid var(--primary-color); display: none; background: #eff6ff; }
-        .result-error { background: var(--error-bg); border-left-color: #ef4444; color: var(--error-text); animation: shake 0.4s ease-in-out; }
+        .result-error { background: var(--error-bg); border-left-color: #ef4444; color: var(--error-text); animation: shake 0.4s ease; }
 
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
-        }
+        @keyframes shake { 0%, 100% {transform: translateX(0);} 25% {transform: translateX(-5px);} 75% {transform: translateX(5px);} }
 
         /* Accordion */
         .accordion-item { border-bottom: 1px solid #f1f5f9; }
@@ -69,10 +120,18 @@
 </head>
 <body>
 
-<div class="container">
+<!-- TRANG BẮT ĐẦU -->
+<div id="welcome-screen">
+    <div class="welcome-logo">BankTime</div>
+    <div class="welcome-sub">Hỗ trợ tài chính dành cho sinh viên Kế toán</div>
+    <button class="btn-start" onclick="startApp()">Bắt đầu ngay</button>
+</div>
+
+<!-- TRANG ỨNG DỤNG CHÍNH -->
+<div class="container" id="main-app">
     <header>
         <h1>BankTime</h1>
-        <p style="font-size: 0.8rem; color: var(--secondary-color);">Hỗ trợ tài chính Kế toán chuẩn xác</p>
+        <p style="font-size: 0.8rem; color: var(--secondary-color);">Công cụ tính toán chuẩn xác</p>
     </header>
 
     <nav class="tabs-nav">
@@ -81,21 +140,21 @@
         <button class="tab-btn" onclick="openTab(event, 'tab3')">Trả góp</button>
     </nav>
 
-    <!-- TAB 1 -->
+    <!-- Tab 1 -->
     <div id="tab1" class="tab-content active">
         <div class="card">
             <div class="accordion-item">
                 <button class="accordion-header" onclick="toggleAccordion(this)">Lãi đơn là gì? <span>+</span></button>
-                <div class="accordion-body">Lãi tính cố định trên số vốn gốc ban đầu. Công thức: I = P * r * n.</div>
+                <div class="accordion-body">Lãi tính cố định trên số vốn gốc ban đầu. I = P * r * n.</div>
             </div>
             <div class="accordion-item">
                 <button class="accordion-header" onclick="toggleAccordion(this)">Lãi kép là gì? <span>+</span></button>
-                <div class="accordion-body">Lãi cộng dồn vào gốc để tính lãi cho kỳ sau. Lãi mẹ đẻ lãi con.</div>
+                <div class="accordion-body">Lãi cộng dồn vào gốc để tính lãi cho kỳ sau (Lãi mẹ đẻ lãi con).</div>
             </div>
         </div>
     </div>
 
-    <!-- TAB 2: TIẾT KIỆM -->
+    <!-- Tab 2 -->
     <div id="tab2" class="tab-content">
         <div class="card">
             <div class="form-group">
@@ -105,33 +164,33 @@
             </div>
             <div class="form-group">
                 <label>Số tiền gửi mỗi tháng (VNĐ)</label>
-                <input type="number" id="monthlySaving" placeholder="Nhập tiền gửi mỗi tháng..." oninput="handleInput(this, 'monthlyWord')">
+                <input type="number" id="monthlySaving" placeholder="Nhập tiền gửi..." oninput="handleInput(this, 'monthlyWord')">
                 <div id="monthlyWord" class="amount-word"></div>
             </div>
             <div class="form-group">
                 <label>Lãi suất ngân hàng (%/năm)</label>
-                <input type="number" id="savingRate" step="0.1" placeholder="Ví dụ: 6.0 (Phải nhập số)">
+                <input type="number" id="savingRate" step="0.1" placeholder="Bắt buộc nhập (Ví dụ: 6.5)">
             </div>
             <button class="btn-calc" onclick="calculateSaving()">Tính toán thời gian</button>
             <div id="savingResult" class="result-box"></div>
         </div>
     </div>
 
-    <!-- TAB 3: TRẢ GÓP -->
+    <!-- Tab 3 -->
     <div id="tab3" class="tab-content">
         <div class="card">
             <div class="form-group">
                 <label>Giá trị tài sản (VNĐ)</label>
-                <input type="number" id="assetValue" placeholder="Ví dụ: 20000000" oninput="handleInput(this, 'assetWord')">
+                <input type="number" id="assetValue" placeholder="Ví dụ: 30000000" oninput="handleInput(this, 'assetWord')">
                 <div id="assetWord" class="amount-word"></div>
             </div>
             <div class="form-group">
                 <label>% Trả trước (%)</label>
-                <input type="number" id="downPaymentPercent" placeholder="Nhập % trả trước (0 - 99)">
+                <input type="number" id="downPaymentPercent" placeholder="Ví dụ: 30">
             </div>
             <div class="form-group">
                 <label>Lãi suất vay (%/năm)</label>
-                <input type="number" id="loanRate" step="0.1" placeholder="Nhập lãi suất (Ví dụ: 12)">
+                <input type="number" id="loanRate" step="0.1" placeholder="Bắt buộc nhập (Ví dụ: 12)">
             </div>
             <div class="form-group">
                 <label>Số tháng vay (tháng)</label>
@@ -140,28 +199,27 @@
             <button class="btn-calc" onclick="calculateInstallment()">Tính lịch trả góp</button>
             <div id="installmentResult" class="result-box">
                 <p id="monthlyPayText" style="font-weight: bold; margin-bottom: 10px;"></p>
-                <div class="table-container">
-                    <table id="scheduleTable">
-                        <thead><tr><th>Kỳ trả</th><th>Số tiền (VNĐ)</th></tr></thead>
-                        <tbody></tbody>
-                    </table>
-                </div>
+                <div class="table-container"><table id="scheduleTable"><thead><tr><th>Kỳ</th><th>Số tiền</th></tr></thead><tbody></tbody></table></div>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-    // --- ĐỌC SỐ TIẾNG VIỆT CHUẨN ---
+    // Hàm chuyển trang
+    function startApp() {
+        document.getElementById('welcome-screen').classList.add('hidden');
+        document.getElementById('main-app').classList.add('active');
+    }
+
+    // Thuật toán đọc số chuẩn xác
     function docSoTiengViet(so) {
         if (so == 0) return "Không đồng";
-        if (so < 0) return "Số tiền không hợp lệ";
         const chuSo = ["không", "một", "hai", "ba", "bốn", "năm", "sáu", "bảy", "tám", "chín"];
         const donVi = ["", "nghìn", "triệu", "tỷ"];
         let s = Math.floor(so).toString();
         while (s.length % 3 !== 0) s = "0" + s;
-        let result = "";
-        let hasValue = false;
+        let result = "", hasValue = false;
         for (let i = 0; i < s.length; i += 3) {
             let group = s.substr(i, 3);
             let gInt = parseInt(group);
@@ -179,9 +237,7 @@
                 }
                 result += donVi[dIndex % 4] + " ";
                 hasValue = true;
-            } else if (hasValue && dIndex > 0 && dIndex % 3 === 0) {
-                result += donVi[3] + " ";
-            }
+            } else if (hasValue && dIndex > 0 && dIndex % 3 === 0) result += donVi[3] + " ";
         }
         return result.trim().charAt(0).toUpperCase() + result.trim().slice(1) + " đồng";
     }
@@ -209,81 +265,45 @@
         element.innerHTML = `⚠️ ${message}`;
     }
 
-    // --- TÍNH TIẾT KIỆM (KIỂM TRA CHẶT CHẼ) ---
     function calculateSaving() {
         const targetRaw = document.getElementById('targetAmount').value;
         const monthlyRaw = document.getElementById('monthlySaving').value;
         const rateRaw = document.getElementById('savingRate').value;
         const resBox = document.getElementById('savingResult');
 
-        // 1. Kiểm tra để trống
         if (targetRaw === "" || monthlyRaw === "" || rateRaw === "") {
-            showError(resBox, "Vui lòng nhập đầy đủ tất cả các trường dữ liệu (bao gồm cả Lãi suất).");
+            showError(resBox, "Vui lòng nhập đầy đủ các trường (bao gồm lãi suất).");
             return;
         }
 
-        const target = parseFloat(targetRaw);
-        const monthly = parseFloat(monthlyRaw);
-        const yearlyRate = parseFloat(rateRaw);
+        const target = parseFloat(targetRaw), monthly = parseFloat(monthlyRaw), rate = parseFloat(rateRaw);
+        if (target <= 0 || monthly <= 0 || rate < 0) { showError(resBox, "Dữ liệu phải là số dương."); return; }
+        if (monthly >= target) { showError(resBox, "Tiền gửi mỗi tháng không được lớn hơn hoặc bằng mục tiêu."); return; }
 
-        // 2. Kiểm tra số hợp lệ
-        if (target <= 0 || monthly <= 0 || yearlyRate < 0) {
-            showError(resBox, "Dữ liệu nhập vào phải là số dương.");
-            return;
-        }
-
-        // 3. Kiểm tra logic tiền gửi vs mục tiêu
-        if (monthly >= target) {
-            showError(resBox, "Số tiền gửi hàng tháng đã bằng hoặc vượt mục tiêu. Bạn không cần tính thời gian.");
-            return;
-        }
-
-        const r = (yearlyRate / 100) / 12;
-        let months = (r === 0) 
-            ? Math.ceil(target / monthly) 
-            : Math.ceil(Math.log((target * r / monthly) + 1) / Math.log(1 + r));
-
-        resBox.style.display = "block";
-        resBox.classList.remove("result-error");
-        resBox.innerHTML = `Bạn cần gửi tiết kiệm trong <strong>${months} tháng</strong> để đạt mục tiêu.`;
+        const r = (rate / 100) / 12;
+        let months = (r === 0) ? Math.ceil(target / monthly) : Math.ceil(Math.log((target * r / monthly) + 1) / Math.log(1 + r));
+        resBox.style.display = "block"; resBox.classList.remove("result-error");
+        resBox.innerHTML = `Bạn cần gửi trong <strong>${months} tháng</strong> để đạt mục tiêu.`;
     }
 
-    // --- TÍNH TRẢ GÓP (KIỂM TRA CHẶT CHẼ) ---
     function calculateInstallment() {
-        const priceRaw = document.getElementById('assetValue').value;
-        const downRaw = document.getElementById('downPaymentPercent').value;
-        const rateRaw = document.getElementById('loanRate').value;
-        const monthsRaw = document.getElementById('loanMonths').value;
+        const pR = document.getElementById('assetValue').value, dR = document.getElementById('downPaymentPercent').value;
+        const rR = document.getElementById('loanRate').value, mR = document.getElementById('loanMonths').value;
         const resBox = document.getElementById('installmentResult');
 
-        if (priceRaw === "" || downRaw === "" || rateRaw === "" || monthsRaw === "") {
-            showError(resBox, "Vui lòng nhập đầy đủ: Giá trị, % Trả trước, Lãi suất và Thời hạn vay.");
-            return;
-        }
+        if (pR==="" || dR==="" || rR==="" || mR==="") { showError(resBox, "Vui lòng nhập đầy đủ thông tin."); return; }
 
-        const price = parseFloat(priceRaw);
-        const down = parseFloat(downRaw);
-        const yearlyRate = parseFloat(rateRaw);
-        const months = parseInt(monthsRaw);
+        const p = parseFloat(pR), d = parseFloat(dR), r_y = parseFloat(rR), m = parseInt(mR);
+        if (p<=0 || d<0 || d>=100 || r_y<0 || m<=0) { showError(resBox, "Dữ liệu không hợp lệ."); return; }
 
-        if (price <= 0 || down < 0 || down >= 100 || yearlyRate < 0 || months <= 0) {
-            showError(resBox, "Dữ liệu nhập vào không hợp lệ. Vui lòng kiểm tra lại các con số.");
-            return;
-        }
+        const loan = p * (1 - d/100), r = (r_y/100)/12;
+        const monthly = (r === 0) ? (loan / m) : (loan * r * Math.pow(1+r, m)) / (Math.pow(1+r, m) - 1);
 
-        const loan = price * (1 - down / 100);
-        const r = (yearlyRate / 100) / 12;
-        const monthlyPay = (r === 0) ? (loan / months) : (loan * r * Math.pow(1 + r, months)) / (Math.pow(1 + r, months) - 1);
-
-        resBox.style.display = "block";
-        resBox.classList.remove("result-error");
-        document.getElementById('monthlyPayText').innerText = `Trả mỗi tháng: ${new Intl.NumberFormat('vi-VN').format(Math.round(monthlyPay))} VNĐ`;
-        
+        resBox.style.display = "block"; resBox.classList.remove("result-error");
+        document.getElementById('monthlyPayText').innerText = `Trả mỗi tháng: ${new Intl.NumberFormat('vi-VN').format(Math.round(monthly))} VNĐ`;
         const tbody = document.querySelector("#scheduleTable tbody");
         tbody.innerHTML = "";
-        for (let i = 1; i <= months; i++) {
-            tbody.innerHTML += `<tr><td>Kỳ thứ ${i}</td><td>${new Intl.NumberFormat('vi-VN').format(Math.round(monthlyPay))}</td></tr>`;
-        }
+        for (let i = 1; i <= m; i++) tbody.innerHTML += `<tr><td>Kỳ ${i}</td><td>${new Intl.NumberFormat('vi-VN').format(Math.round(monthly))}</td></tr>`;
     }
 </script>
 </body>
